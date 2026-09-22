@@ -1,19 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Slayer Legend - Receitas</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>Slayer Legend</h1>
+    <main class="container">
 
-    <h2>Calculadora de Receitas</h2>
+        <h1>🍳 Slayer Legend</h1>
 
-    <p>Escolha os ingredientes que você possui.</p>
+        <p class="subtitle">
+            Descubra quais pratos você consegue preparar
+        </p>
+
+        <section class="ingredients">
+
+            <div class="ingredient-box">
+                <label for="ingredient1">
+                    Ingrediente 1
+                </label>
+
+                <select id="ingredient1">
+                    <option value="">Selecione</option>
+                </select>
+
+                <input
+                    id="quantity1"
+                    type="number"
+                    min="0"
+                    value="0"
+                >
+            </div>
+
+
+            <div class="ingredient-box">
+                <label for="ingredient2">
+                    Ingrediente 2
+                </label>
+
+                <select id="ingredient2">
+                    <option value="">Selecione</option>
+                </select>
+
+                <input
+                    id="quantity2"
+                    type="number"
+                    min="0"
+                    value="0"
+                >
+            </div>
+
+
+            <div class="ingredient-box">
+                <label for="ingredient3">
+                    Ingrediente 3
+                </label>
+
+                <select id="ingredient3">
+                    <option value="">Selecione</option>
+                </select>
+
+                <input
+                    id="quantity3"
+                    type="number"
+                    min="0"
+                    value="0"
+                >
+            </div>
+
+
+            <div class="ingredient-box">
+                <label for="ingredient4">
+                    Ingrediente 4
+                </label>
+
+                <select id="ingredient4">
+                    <option value="">Selecione</option>
+                </select>
+
+                <input
+                    id="quantity4"
+                    type="number"
+                    min="0"
+                    value="0"
+                >
+            </div>
+
+        </section>
+
+        <button id="searchButton">
+            🔎 Procurar pratos
+        </button>
+
+        <section id="results"></section>
+
+    </main>
 
 </body>
+
 </html>
