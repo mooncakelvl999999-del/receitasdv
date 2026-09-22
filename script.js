@@ -275,11 +275,14 @@ function obterSugestaoDeTroca(receita, inventario) {
     }));
 
     const currentCosts = {};
+    const chefGains = {};
     activeChefs.forEach(chef => {
-        if (chefDoesNotUseRegularIngredients(chef)) return;
         chef.querySelectorAll('.map-chef-item').forEach(item => {
             const quantity = Number(item.querySelector('input').value) || 0;
             if (quantity > 0) {
+                chefGains[item.dataset.id] = (chefGains[item.dataset.id] || 0) + quantity;
+            }
+            if (quantity > 0 && !chefDoesNotUseRegularIngredients(chef)) {
                 const batches = Math.floor(quantity / 10);
                 currentCosts[item.dataset.costType] = (currentCosts[item.dataset.costType] || 0) + batches * Number(item.dataset.costAmount);
             }
@@ -287,20 +290,35 @@ function obterSugestaoDeTroca(receita, inventario) {
     });
 
     const trades = [];
+    const tradeGains = {};
     const needed = contarIngredientes(receita.ingredientes);
     for (const [ingredient, quantity] of Object.entries(needed)) {
         const missing = quantity - (inventario[ingredient] || 0);
         if (missing <= 0) continue;
         const option = options.get(ingredient);
         if (!option) return null;
-        const batches = Math.ceil(missing / 10);
+        const unitsPerIngredient = Number(unidadesIngredientes[ingredient]) || 1;
+        const requiredRaw = missing * unitsPerIngredient;
+        const batches = Math.ceil(requiredRaw / 10);
         const cost = batches * option.costAmount;
         currentCosts[option.costType] = (currentCosts[option.costType] || 0) + cost;
+        tradeGains[ingredient] = (tradeGains[ingredient] || 0) + batches * 10;
         trades.push({ ingredient, quantity: missing, cost, costType: option.costType, chefName: option.chefName });
     }
 
     if (!trades.length) return null;
     if (Object.entries(currentCosts).some(([type, cost]) => getRawRegularQty(type) < cost)) return null;
+
+    const projectedInventory = {};
+    Object.keys(unidadesIngredientes).forEach(ingredient => {
+        const rawInput = getRawRegularQty(ingredient);
+        const remainingRaw = rawInput - (currentCosts[ingredient] || 0);
+        const totalItems = remainingRaw + (chefGains[ingredient] || 0) + (tradeGains[ingredient] || 0);
+        const units = Number(unidadesIngredientes[ingredient]);
+        projectedInventory[ingredient] = totalItems > 0 && units > 0 ? Math.floor(totalItems / units) : 0;
+    });
+
+    if (Object.entries(needed).some(([ingredient, quantity]) => (projectedInventory[ingredient] || 0) < quantity)) return null;
     return trades;
 }
 
