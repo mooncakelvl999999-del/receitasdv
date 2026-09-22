@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Slayer Legend - Receitas</title>
-
+    <title>Vale do Dragão Temporada 5 - Slayer Legend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -16,138 +17,173 @@
 
         <section class="main-content">
 
-            <h1>🍳 Slayer Legend</h1>
+            <h1>Vale do Dragão Temporada 5 - Slayer Legend</h1>
             <marquee>Snickers Lixo!</marquee>
             <p class="subtitle">
-                Informe seus ingredientes para descobrir quais pratos você consegue preparar
+                Ingredientes e Receitas
             </p>
+            <p class="credits">Desenvolvido por Kakalover e Dance - Agradecemos à Slayer Legend Community Discord e à Nazarick</p>
+            <p class="last-update">Última atualização: 22/09/2026 - v0.4</p>
 
+            <!-- DAY SELECTOR -->
+            <div class="day-selector">
+                <button class="day-btn" data-day="Terca">🥗 Terça — Entradas</button>
+                <button class="day-btn" data-day="Quarta">🍖 Quarta — Pratos Principais</button>
+                <button class="day-btn" data-day="Quinta">🍰 Quinta — Sobremesas</button>
+            </div>
 
-            <section class="ingredients">
+            <!-- REGULAR INGREDIENTS -->
+            <section class="ingredients-section">
+                <h2>🛒 Ingredientes Regulares</h2>
+                <p class="section-note">Bote a quantidade antes de comprar os ingredientes do chef do mapa para ter o cálculo correto de gasto total de recursos para cada prato.</p>
+                <div class="ingredients">
+                    <div class="ingredient-box">
+                        <label for="Ovo">🥚 Ovo</label>
+                        <input id="Ovo" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Trigo">🌾 Trigo</label>
+                        <input id="Trigo" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Alface">🥬 Alface</label>
+                        <input id="Alface" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Carne">🥩 Carne</label>
+                        <input id="Carne" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Leite">🥛 Leite</label>
+                        <input id="Leite" type="number" min="0" value="0">
+                    </div>
+                </div>
+            </section>
 
-                <div class="ingredient-box">
-                    <label for="Manjericão">🌿 Manjericão</label>
-                    <input id="Manjericão" type="number" min="0" value="0">
+            <!-- MAP CHEF -->
+            <section class="ingredients-section">
+                <h2>🧑‍🍳 Itens do Cozinheiro do Mapa</h2>
+
+                <div class="chefs-container">
+                    <div class="chef-card" data-chef="cedric">
+                        <div class="chef-header">👨‍🍳 Chef Cedric</div>
+                        <label class="chef-checkbox"><input type="checkbox"> Eu já comprei os ingredientes, não reduza dos ingredientes regulares totais</label>
+                        <div class="chef-items">
+                            <div class="ingredient-box map-chef-item" data-id="Morango" data-cost-type="Alface" data-cost-amount="20">
+                                <label>🍓 Morango</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                            <div class="ingredient-box map-chef-item" data-id="Cana-de-açúcar" data-cost-type="Leite" data-cost-amount="50">
+                                <label>🎋 Cana-de-açúcar</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chef-card" data-chef="rosa">
+                        <div class="chef-header">👩‍🍳 Chef Rosa</div>
+                        <label class="chef-checkbox"><input type="checkbox"> Eu já comprei os ingredientes, não reduza dos ingredientes regulares totais</label>
+                        <div class="chef-items">
+                            <div class="ingredient-box map-chef-item" data-id="Milho" data-cost-type="Leite" data-cost-amount="50">
+                                <label>🌽 Milho</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                            <div class="ingredient-box map-chef-item" data-id="Amendoim" data-cost-type="Alface" data-cost-amount="20">
+                                <label>🥜 Amendoim</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chef-card" data-chef="gene">
+                        <div class="chef-header">👨‍🍳 Chef Gene</div>
+                        <label class="chef-checkbox"><input type="checkbox"> Eu já comprei os ingredientes, não reduza dos ingredientes regulares totais</label>
+                        <div class="chef-items">
+                            <div class="ingredient-box map-chef-item" data-id="Camarão" data-cost-type="Trigo" data-cost-amount="100">
+                                <label>🦐 Camarão</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                            <div class="ingredient-box map-chef-item" data-id="Arroz" data-cost-type="Carne" data-cost-amount="10">
+                                <label>🍚 Arroz</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chef-card" data-chef="arwen">
+                        <div class="chef-header">👩‍🍳 Chef Arwen</div>
+                        <label class="chef-checkbox"><input type="checkbox"> Eu já comprei os ingredientes, não reduza dos ingredientes regulares totais</label>
+                        <div class="chef-items">
+                            <div class="ingredient-box map-chef-item" data-id="Batata" data-cost-type="Alface" data-cost-amount="20">
+                                <label>🥔 Batata</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                            <div class="ingredient-box map-chef-item" data-id="Tomate" data-cost-type="Leite" data-cost-amount="50">
+                                <label>🍅 Tomate</label>
+                                <input type="number" min="0" step="10" value="0">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="ingredient-box">
-                    <label for="Cacau">🍫 Cacau</label>
-                    <input id="Cacau" type="number" min="0" value="0">
-                </div>
+                <p class="section-note chef-note">Cada ingrediente de chef adicionado aqui é reduzido automaticamente da quantidade do ingrediente que se necessita para comprar.<small>Ex: Ao botar 100 alfaces e botar um morango (20 alfaces), não estará disponível a Salada da Ellie que usa 100 alfaces no total.</small></p>
 
-                <div class="ingredient-box">
-                    <label for="Caviar">🥄 Caviar</label>
-                    <input id="Caviar" type="number" min="0" value="0">
+                <div id="cost-summary" class="cost-summary" style="display: none;">
+                    <strong>Custos para o Cozinheiro:</strong>
+                    <span id="cost-text"></span>
                 </div>
+            </section>
 
-                <div class="ingredient-box">
-                    <label for="Queijo">🧀 Queijo</label>
-                    <input id="Queijo" type="number" min="0" value="0">
+            <!-- SPECIAL INGREDIENTS -->
+            <section class="ingredients-section">
+                <h2>✨ Itens Especiais</h2>
+                <div class="ingredients">
+                    <div class="ingredient-box">
+                        <label for="Manjericão">🌿 Manjericão</label>
+                        <input id="Manjericão" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Cacau">🍫 Cacau</label>
+                        <input id="Cacau" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Caviar">🥄 Caviar</label>
+                        <input id="Caviar" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Queijo">🧀 Queijo</label>
+                        <input id="Queijo" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Pimenta">🌶️ Pimenta</label>
+                        <input id="Pimenta" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Favo de mel">🍯 Favo de mel</label>
+                        <input id="Favo de mel" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Trufa">🍄 Trufa</label>
+                        <input id="Trufa" type="number" min="0" value="0">
+                    </div>
+                    <div class="ingredient-box">
+                        <label for="Atum">🐟 Atum</label>
+                        <input id="Atum" type="number" min="0" value="0">
+                    </div>
                 </div>
-
-                <div class="ingredient-box">
-                    <label for="Pimenta">🌶️ Pimenta</label>
-                    <input id="Pimenta" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Milho">🌽 Milho</label>
-                    <input id="Milho" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Ovo">🥚 Ovo</label>
-                    <input id="Ovo" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Favo de mel">🍯 Favo de mel</label>
-                    <input id="Favo de mel" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Alface">🥬 Alface</label>
-                    <input id="Alface" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Carne">🥩 Carne</label>
-                    <input id="Carne" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Leite">🥛 Leite</label>
-                    <input id="Leite" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Amendoim">🥜 Amendoim</label>
-                    <input id="Amendoim" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Batata">🥔 Batata</label>
-                    <input id="Batata" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Arroz">🍚 Arroz</label>
-                    <input id="Arroz" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Camarão">🦐 Camarão</label>
-                    <input id="Camarão" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Morango">🍓 Morango</label>
-                    <input id="Morango" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Cana-de-açúcar">🎋 Cana-de-açúcar</label>
-                    <input id="Cana-de-açúcar" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Tomate">🍅 Tomate</label>
-                    <input id="Tomate" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Trufa">🍄 Trufa</label>
-                    <input id="Trufa" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Atum">🐟 Atum</label>
-                    <input id="Atum" type="number" min="0" value="0">
-                </div>
-
-                <div class="ingredient-box">
-                    <label for="Trigo">🌾 Trigo</label>
-                    <input id="Trigo" type="number" min="0" value="0">
-                </div>
-
             </section>
 
         </section>
 
-
         <aside id="results" class="results-panel">
-
             <h2>🍽️ Pratos possíveis</h2>
-
             <p class="empty-message">
                 Informe seus ingredientes para descobrir
                 quais pratos você consegue preparar.
             </p>
-
         </aside>
 
     </main>
-
 
     <script src="script.js"></script>
 

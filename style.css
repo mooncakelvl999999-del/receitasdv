@@ -5,34 +5,25 @@
 body {
     margin: 0;
     min-height: 100vh;
-
-    font-family: Arial, sans-serif;
-
+    font-family: 'Inter', Arial, sans-serif;
     background: #111827;
     color: #f9fafb;
 }
 
 
 /* =========================================================
-   LAYOUT PRINCIPAL
+   LAYOUT
    ========================================================= */
 
 .container {
     width: min(1400px, 94%);
     margin: 0 auto;
     padding: 30px 0;
-
     display: grid;
     grid-template-columns: minmax(0, 1fr) 380px;
     gap: 30px;
-
     align-items: start;
 }
-
-
-/* =========================================================
-   CONTEÚDO PRINCIPAL
-   ========================================================= */
 
 .main-content {
     min-width: 0;
@@ -46,370 +37,353 @@ h1 {
 
 .subtitle {
     text-align: center;
-
     color: #9ca3af;
-
-    margin: 0 0 30px;
-
+    margin: 0 0 8px;
     line-height: 1.5;
 }
 
-
-/* =========================================================
-   INGREDIENTES
-   ========================================================= */
-
-.ingredients {
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 15px;
+.credits,
+.last-update {
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+    margin: 0 0 4px;
 }
 
+.last-update {
+    font-size: 11px;
+    margin-bottom: 24px;
+}
 
-.ingredient-box {
+.day-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.day-btn {
+    flex: 1;
+    min-width: 130px;
     background: #1f2937;
-
-    border: 1px solid #374151;
-
-    border-radius: 12px;
-
-    padding: 16px;
-
-    transition:
-        border-color 0.2s,
-        transform 0.2s;
-}
-
-
-.ingredient-box:hover {
-    border-color: #4b5563;
-
-    transform: translateY(-2px);
-}
-
-
-.ingredient-box label {
-    display: block;
-
-    margin-bottom: 10px;
-
-    font-weight: bold;
-
-    font-size: 15px;
-}
-
-
-.ingredient-box input {
-    width: 100%;
-
-    padding: 10px 12px;
-
-    border-radius: 8px;
-
-    border: 1px solid #4b5563;
-
-    background: #111827;
-
-    color: white;
-
-    font-size: 16px;
-
-    outline: none;
-}
-
-
-.ingredient-box input:focus {
-    border-color: #f59e0b;
-
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
-}
-
-
-/* Remove as setinhas do input number em alguns navegadores */
-
-.ingredient-box input::-webkit-inner-spin-button,
-.ingredient-box input::-webkit-outer-spin-button {
-    opacity: 1;
-}
-
-
-/* =========================================================
-   PAINEL DE PRATOS
-   ========================================================= */
-
-.results-panel {
-    position: sticky;
-
-    top: 20px;
-
-    background: #1f2937;
-
-    border: 1px solid #374151;
-
-    border-radius: 12px;
-
-    padding: 20px;
-
-    max-height: calc(100vh - 40px);
-
-    overflow-y: auto;
-}
-
-
-.results-panel h2 {
-    margin: 0 0 20px;
-
-    font-size: 20px;
-}
-
-
-.empty-message {
-    color: #9ca3af;
-
-    line-height: 1.5;
-
-    margin: 0;
-}
-
-
-/* =========================================================
-   CARDS DAS RECEITAS
-   ========================================================= */
-
-.recipe {
-    background: #111827;
-
-    border: 1px solid #374151;
-
-    border-radius: 10px;
-
-    padding: 15px;
-
-    margin-bottom: 12px;
-}
-
-
-.recipe:last-child {
-    margin-bottom: 0;
-}
-
-
-.recipe h3 {
-    margin: 0 0 7px;
-
-    font-size: 17px;
-
-    line-height: 1.3;
-}
-
-
-.recipe-info {
-    color: #9ca3af;
-
-    font-size: 13px;
-
-    margin-bottom: 10px;
-}
-
-
-.recipe-portions {
-    font-size: 16px;
-
-    font-weight: bold;
-
-    color: #f59e0b;
-}
-
-
-.recipe-ingredients {
-    margin-top: 10px;
-
     color: #d1d5db;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   BARRA DE ROLAGEM DO PAINEL
-   ========================================================= */
-
-.results-panel::-webkit-scrollbar {
-    width: 7px;
-}
-
-
-.results-panel::-webkit-scrollbar-track {
-    background: #111827;
-
+    border: 1px solid #374151;
+    padding: 12px 10px;
     border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    text-align: center;
 }
 
-
-.results-panel::-webkit-scrollbar-thumb {
-    background: #4b5563;
-
-    border-radius: 10px;
-}
-
-
-.results-panel::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 1100px) {
-
-    .container {
-        grid-template-columns: minmax(0, 1fr) 320px;
-    }
-
-    .ingredients {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-
-/* =========================================================
-   CELULAR / TELA PEQUENA
-   ========================================================= */
-
-@media (max-width: 800px) {
-
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .results-panel {
-        position: static;
-
-        max-height: none;
-
-        order: 2;
-    }
-
-    .ingredients {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-
-@media (max-width: 500px) {
-
-    .container {
-        width: 94%;
-
-        padding: 20px 0;
-    }
-
-    h1 {
-        font-size: 26px;
-    }
-
-    .ingredients {
-        grid-template-columns: 1fr;
-    }
-}* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    background: #111827;
+.day-btn:hover {
+    border-color: #f59e0b;
     color: #f9fafb;
 }
 
-.container {
-    width: min(1400px, 94%);
-    margin: 0 auto;
-    padding: 40px 0;
-
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 30px;
-    align-items: start;
+.day-btn.active {
+    background: #f59e0b;
+    color: #111827;
+    border-color: #f59e0b;
 }
 
-.main-content {
-    min-width: 0;
+
+/* =========================================================
+   INGREDIENT SECTIONS
+   ========================================================= */
+
+.ingredients-section {
+    margin-bottom: 36px;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 8px;
+.ingredients-section h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #374151;
 }
 
-.subtitle {
-    text-align: center;
+.section-note {
     color: #9ca3af;
-    margin-bottom: 40px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: -4px 0 14px;
 }
 
+.chef-note {
+    margin: 16px 0 0;
+}
+
+.chef-note small {
+    display: block;
+    margin-top: 4px;
+    color: #6b7280;
+    font-size: 11px;
+}
+
+/* Square grid */
 .ingredients {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
 }
 
+/* Default box: icon + name only, click to reveal counter */
 .ingredient-box {
     background: #1f2937;
     border: 1px solid #374151;
     border-radius: 12px;
-    padding: 20px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: border-color 0.2s, transform 0.1s;
+}
+
+.ingredient-box:hover {
+    border-color: #4b5563;
+    transform: scale(1.02);
+}
+
+.ingredient-box.active {
+    border-color: #f59e0b;
 }
 
 .ingredient-box label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 13px;
+    word-break: break-word;
+    line-height: 1.3;
+    margin-bottom: 6px;
 }
 
-.ingredient-box select,
-.ingredient-box input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
+/* Regular/Special: input hidden until .active */
+.ingredients-section > .ingredients .ingredient-box input {
+    display: none;
+    width: 60%;
+    text-align: center;
+    padding: 6px 8px;
     border-radius: 8px;
     border: 1px solid #4b5563;
     background: #111827;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
+    outline: none;
+    font-family: inherit;
 }
+
+.ingredients-section > .ingredients .ingredient-box.active input {
+    display: block;
+}
+
+.ingredient-box input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245,158,11,0.15);
+}
+
+
+/* =========================================================
+   CHEF CARDS
+   ========================================================= */
+
+.chefs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.chef-card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.chef-card.active {
+    border-color: #f59e0b;
+}
+
+.chef-header {
+    padding: 14px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    background: #1f2937;
+    transition: background 0.2s;
+}
+
+.chef-header:hover {
+    background: #374151;
+}
+
+.chef-clear {
+    display: none;
+    margin: 0 10px 8px;
+    width: calc(100% - 20px);
+    padding: 6px 8px;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    background: transparent;
+    color: #d1d5db;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+}
+
+.chef-clear:hover {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.chef-card.active .chef-clear {
+    display: block;
+}
+
+.chef-card.active ~ .chef-card .chef-header[aria-disabled="true"],
+.chef-header[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.chef-checkbox {
+    display: none;
+    gap: 6px;
+    align-items: flex-start;
+    padding: 0 10px 8px;
+    color: #d1d5db;
+    font-size: 11px;
+    line-height: 1.35;
+    cursor: pointer;
+}
+
+.chef-card.active .chef-checkbox {
+    display: flex;
+}
+
+.chef-checkbox input {
+    flex: 0 0 auto;
+    margin: 1px 0 0;
+    accent-color: #f59e0b;
+}
+
+.chef-items {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: #111827;
+}
+
+.chef-card.active .chef-items {
+    display: flex;
+}
+
+/* Map chef items: always show input (no click-to-reveal) */
+.map-chef-item {
+    aspect-ratio: auto !important;
+    padding: 10px !important;
+    cursor: default !important;
+    border: 1px solid #374151;
+    border-radius: 10px;
+}
+
+.map-chef-item label {
+    margin-bottom: 8px !important;
+}
+
+/* Always show the input inside chef items */
+.map-chef-item input {
+    display: block !important;
+    width: 80%;
+    text-align: center;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid #4b5563;
+    background: #1f2937;
+    color: white;
+    font-size: 15px;
+    outline: none;
+    font-family: inherit;
+}
+
+.map-chef-item input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245,158,11,0.15);
+}
+
+.map-chef-item.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.map-chef-item.cannot-afford {
+    opacity: 0.45;
+}
+
+.map-chef-item.cannot-afford input {
+    border-color: #ef4444;
+}
+
+.ingredient-warning {
+    display: block;
+    margin-top: 7px;
+    color: #fca5a5;
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+/* Cost summary */
+.cost-summary {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #1f2937;
+    border-radius: 8px;
+    border: 1px solid #f59e0b;
+    color: #f59e0b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESULTS PANEL
+   ========================================================= */
 
 .results-panel {
     position: sticky;
     top: 20px;
-
     background: #1f2937;
     border: 1px solid #374151;
     border-radius: 12px;
-
     padding: 20px;
-
     max-height: calc(100vh - 40px);
     overflow-y: auto;
 }
 
 .results-panel h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0 0 20px;
     font-size: 20px;
 }
 
 .empty-message {
     color: #9ca3af;
     line-height: 1.5;
+    margin: 0;
 }
+
+
+/* =========================================================
+   RECIPE CARDS
+   ========================================================= */
 
 .recipe {
     background: #111827;
@@ -424,43 +398,79 @@ h1 {
 }
 
 .recipe h3 {
-    margin: 0 0 8px;
+    margin: 0 0 7px;
     font-size: 17px;
+    line-height: 1.3;
 }
 
 .recipe-info {
     color: #9ca3af;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 10px;
 }
 
 .recipe-portions {
     font-size: 16px;
     font-weight: bold;
+    color: #f59e0b;
 }
 
 .recipe-ingredients {
     margin-top: 10px;
     color: #d1d5db;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
 }
 
-@media (max-width: 900px) {
-
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .results-panel {
-        position: static;
-        max-height: none;
-    }
+.recipe.highlight {
+    border-color: #f59e0b;
+    box-shadow: 0 0 12px rgba(245,158,11,0.2);
 }
 
-@media (max-width: 600px) {
+.recipe.highlight::before {
+    content: "✨ Destaque do Dia";
+    display: inline-block;
+    background: #f59e0b;
+    color: #111827;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
 
-    .ingredients {
-        grid-template-columns: 1fr;
-    }
+.recipe.dimmed {
+    opacity: 0.4;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.results-panel::-webkit-scrollbar { width: 7px; }
+.results-panel::-webkit-scrollbar-track { background: #111827; border-radius: 10px; }
+.results-panel::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+.results-panel::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .container { grid-template-columns: minmax(0, 1fr) 320px; }
+}
+
+@media (max-width: 800px) {
+    .container { grid-template-columns: 1fr; }
+    .results-panel { position: static; max-height: none; order: 2; }
+}
+
+@media (max-width: 500px) {
+    .container { width: 94%; padding: 20px 0; }
+    h1 { font-size: 26px; }
+    .ingredients { grid-template-columns: repeat(2, 1fr); }
+    .chefs-container { grid-template-columns: repeat(2, 1fr); }
+    .day-selector { flex-direction: column; }
 }
