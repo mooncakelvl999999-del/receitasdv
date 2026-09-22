@@ -14,8 +14,8 @@ async function carregarDados() {
 
         const [receitasResponse, ingredientesResponse] =
             await Promise.all([
-                fetch("recipes.json"),
-                fetch("ingredients.json")
+                fetch("receitas.json"),
+                fetch("ingredientes.json")
             ]);
 
 
