@@ -1,0 +1,11 @@
+﻿Pos 1039: 'TML = `\n            <h2>­ƒì¢´©Å Pratos poss├¡veis</h2>\n\n          '
+Pos 1062: '>­ƒì¢´©Å Pratos poss├¡veis</h2>\n\n            <p class="emptyÔÇómessa'
+Pos 1081: 's</h2>\n\n            <p class="emptyÔÇómessage">\n              '
+Pos 1177: 'ceitas.\n            </p>\n        `;\n    }\n}\n\n\n// ==========='
+Pos 6605: 'TML = `\n            <h2>­ƒì¢´©Å Pratos poss├¡veis</h2>\n\n          '
+Pos 6628: '>­ƒì¢´©Å Pratos poss├¡veis</h2>\n\n            <p class="emptyÔÇómessa'
+Pos 6647: 's</h2>\n\n            <p class="emptyÔÇómessage">\n              '
+Pos 6795: 'eparar.\n            </p>\n        `;\n\n        return;\n    }\n\n'
+Pos 7019: 'nerHTML = `\n        <h2>­ƒì¢´©Å Pratos poss├¡veis</h2>\n    `;\n\n\n  '
+Pos 7042: '>­ƒì¢´©Å Pratos poss├¡veis</h2>\n    `;\n\n\n    // =================='
+Total length: 16377
