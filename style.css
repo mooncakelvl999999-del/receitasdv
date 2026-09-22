@@ -220,11 +220,20 @@ h1 {
     border: 1px solid #374151;
     border-radius: 12px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, transform 0.2s;
 }
 
 .chef-card.active {
     border-color: #f59e0b;
+}
+
+.chef-card.rune-active {
+    border-color: #38bdf8;
+}
+
+.chef-card.chef-blocked {
+    border-color: #ef4444;
+    transform: translateX(3px);
 }
 
 .chef-header {
@@ -265,12 +274,6 @@ h1 {
     display: block;
 }
 
-.chef-card.active ~ .chef-card .chef-header[aria-disabled="true"],
-.chef-header[aria-disabled="true"] {
-    cursor: not-allowed;
-    opacity: 0.45;
-}
-
 .chef-checkbox {
     display: none;
     gap: 6px;
@@ -282,14 +285,42 @@ h1 {
     cursor: pointer;
 }
 
-.chef-card.active .chef-checkbox {
+.chef-card.active .purchased-checkbox {
     display: flex;
+}
+
+.chef-card.rune-active .purchased-checkbox {
+    display: none;
+}
+
+.chef-card .rune-checkbox {
+    display: flex;
+    padding: 0 10px 8px;
+    font-size: 10px;
+}
+
+.chef-card.rune-active .rune-checkbox {
+    color: #7dd3fc;
 }
 
 .chef-checkbox input {
     flex: 0 0 auto;
     margin: 1px 0 0;
     accent-color: #f59e0b;
+}
+
+.chef-preview {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 10px 8px;
+}
+
+.chef-preview img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
 .chef-items {
@@ -504,6 +535,27 @@ h1 {
 
 .recipe.dimmed {
     opacity: 0.4;
+}
+
+.suggestions-heading {
+    margin: 22px 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid #374151;
+    color: #fbbf24;
+    font-size: 15px;
+}
+
+.recipe-suggestion {
+    border-style: dashed;
+    border-color: #6b7280;
+    opacity: 0.82;
+}
+
+.trade-suggestion {
+    margin-top: 8px;
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 

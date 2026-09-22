@@ -73,6 +73,10 @@ function getSelectedChefCard() {
     return document.querySelector('.chef-card.active');
 }
 
+function getActiveChefCards() {
+    return [...document.querySelectorAll('.chef-card.active')];
+}
+
 function chefDoesNotUseRegularIngredients(card) {
     return Boolean(card && card.querySelector('.chef-checkbox input:checked'));
 }
@@ -83,14 +87,15 @@ function chefDoesNotUseRegularIngredients(card) {
 // ============================================================
 
 function updateAffordability() {
-    const selectedChef = getSelectedChefCard();
-    const allChefItems = selectedChef ? selectedChef.querySelectorAll('.map-chef-item') : [];
+    const activeChefs = getActiveChefCards();
+    const allChefItems = activeChefs.flatMap(card => [...card.querySelectorAll('.map-chef-item')]);
 
     // Tally current chef costs already committed
     const committed = {};
     allChefItems.forEach(item => {
+        const chef = item.closest('.chef-card');
         const val = Number(item.querySelector('input').value) || 0;
-        if (val > 0) {
+        if (val > 0 && !chefDoesNotUseRegularIngredients(chef)) {
             const batches    = Math.floor(val / 10);
             const costType   = item.getAttribute('data-cost-type');
             const costAmount = Number(item.getAttribute('data-cost-amount'));
@@ -99,15 +104,28 @@ function updateAffordability() {
     });
 
     allChefItems.forEach(item => {
+        const chef        = item.closest('.chef-card');
         const input      = item.querySelector('input');
         const val        = Number(input.value) || 0;
         const costType   = item.getAttribute('data-cost-type');
         const costAmount = Number(item.getAttribute('data-cost-amount'));
 
+        if (chefDoesNotUseRegularIngredients(chef)) {
+            item.classList.remove('cannot-afford');
+            input.disabled = false;
+            input.title = '';
+            const existingWarning = item.querySelector('.ingredient-warning');
+            if (existingWarning) {
+                existingWarning.hidden = true;
+                existingWarning.textContent = '';
+            }
+            return;
+        }
+
         // How many of this regular ingredient do we have, minus what's already spent on OTHER chef items
         const alreadySpentOnThis = val > 0 ? (Math.floor(val / 10) * costAmount) : 0;
         const spentElsewhere     = (committed[costType] || 0) - alreadySpentOnThis;
-        const rawAvailable       = chefDoesNotUseRegularIngredients(selectedChef) ? Infinity : getRawRegularQty(costType);
+        const rawAvailable       = chefDoesNotUseRegularIngredients(chef) ? Infinity : getRawRegularQty(costType);
         const remaining          = rawAvailable - spentElsewhere;
 
         // Can the user afford at least ONE batch (10 items)?
@@ -142,9 +160,9 @@ function obterInventario() {
     const inventario   = {};
     const mapChefCosts = {};
     const mapChefGains = {};
-    const selectedChef = getSelectedChefCard();
+    const activeChefs  = getActiveChefCards();
 
-    if (selectedChef) selectedChef.querySelectorAll('.map-chef-item').forEach(item => {
+    activeChefs.forEach(chef => chef.querySelectorAll('.map-chef-item').forEach(item => {
         const input = item.querySelector('input');
         const val   = Number(input ? input.value : 0) || 0;
         if (val > 0) {
@@ -152,12 +170,12 @@ function obterInventario() {
             const costType   = item.getAttribute('data-cost-type');
             const costAmount = Number(item.getAttribute('data-cost-amount'));
             const gainId     = item.getAttribute('data-id');
-            if (!chefDoesNotUseRegularIngredients(selectedChef)) {
+            if (!chefDoesNotUseRegularIngredients(chef)) {
                 mapChefCosts[costType] = (mapChefCosts[costType] || 0) + (batches * costAmount);
             }
             mapChefGains[gainId]   = (mapChefGains[gainId]   || 0) + val;
         }
-    });
+    }));
 
     Object.keys(unidadesIngredientes).forEach(ingrediente => {
         const campo = document.getElementById(ingrediente);
@@ -223,8 +241,9 @@ function updateMapChefCostSummary() {
     const costText    = document.getElementById('cost-text');
     const costs       = {};
 
-    const selectedChef = getSelectedChefCard();
-    if (selectedChef && !chefDoesNotUseRegularIngredients(selectedChef)) selectedChef.querySelectorAll('.map-chef-item').forEach(item => {
+    getActiveChefCards().forEach(chef => {
+        if (chefDoesNotUseRegularIngredients(chef)) return;
+        chef.querySelectorAll('.map-chef-item').forEach(item => {
         const val = Number(item.querySelector('input').value) || 0;
         if (val > 0) {
             const batches    = Math.floor(val / 10);
@@ -232,11 +251,89 @@ function updateMapChefCostSummary() {
             const costAmount = Number(item.getAttribute('data-cost-amount'));
             costs[costType]  = (costs[costType] || 0) + (batches * costAmount);
         }
+        });
     });
 
     const parts = Object.entries(costs).map(([t, a]) => a + ' ' + t);
     costSummary.style.display = parts.length > 0 ? 'block' : 'none';
     costText.textContent      = parts.join(' e ');
+}
+
+function obterSugestaoDeTroca(receita, inventario) {
+    const activeChefs = getActiveChefCards();
+    if (!activeChefs.some(chef => !chefDoesNotUseRegularIngredients(chef))) return null;
+
+    const options = new Map();
+    activeChefs.forEach(chef => chef.querySelectorAll('.map-chef-item').forEach(item => {
+        if (!options.has(item.dataset.id)) {
+            options.set(item.dataset.id, {
+                costType: item.dataset.costType,
+                costAmount: Number(item.dataset.costAmount),
+                chefName: item.closest('.chef-card').querySelector('.chef-header').textContent.trim()
+            });
+        }
+    }));
+
+    const currentCosts = {};
+    activeChefs.forEach(chef => {
+        if (chefDoesNotUseRegularIngredients(chef)) return;
+        chef.querySelectorAll('.map-chef-item').forEach(item => {
+            const quantity = Number(item.querySelector('input').value) || 0;
+            if (quantity > 0) {
+                const batches = Math.floor(quantity / 10);
+                currentCosts[item.dataset.costType] = (currentCosts[item.dataset.costType] || 0) + batches * Number(item.dataset.costAmount);
+            }
+        });
+    });
+
+    const trades = [];
+    const needed = contarIngredientes(receita.ingredientes);
+    for (const [ingredient, quantity] of Object.entries(needed)) {
+        const missing = quantity - (inventario[ingredient] || 0);
+        if (missing <= 0) continue;
+        const option = options.get(ingredient);
+        if (!option) return null;
+        const batches = Math.ceil(missing / 10);
+        const cost = batches * option.costAmount;
+        currentCosts[option.costType] = (currentCosts[option.costType] || 0) + cost;
+        trades.push({ ingredient, quantity: missing, cost, costType: option.costType, chefName: option.chefName });
+    }
+
+    if (!trades.length) return null;
+    if (Object.entries(currentCosts).some(([type, cost]) => getRawRegularQty(type) < cost)) return null;
+    return trades;
+}
+
+function criarCardDeReceita(receita, porcoes, trades = null) {
+    const isSuggestion = Boolean(trades);
+    const card = document.createElement('article');
+    card.className = 'recipe' + (isSuggestion ? ' recipe-suggestion' : '');
+    card.innerHTML = [
+        '<img class="recipe-image" src="assets/recipes/recipe-' + receita.id + '.png" alt="' + receita.nome + '">',
+        '<h3>' + receita.nome + '</h3>',
+        '<div class="recipe-info">' + receita.tipo + ' &bull; ' + receita.raridade + '</div>',
+        isSuggestion ? '<div class="trade-suggestion">Troque ' + trades.map(trade => trade.quantity + 'x ' + trade.ingredient + ' com ' + trade.chefName).join(' e ') + '</div>' : '',
+        '<div class="recipe-ingredients">' + formatarIngredientes(receita.ingredientes) + '</div>'
+    ].join('');
+    return card;
+}
+
+function ordemDeRaridade(raridade) {
+    const normalizada = raridade.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    if (normalizada.includes('immortal') || normalizada.includes('imortal')) return 1;
+    if (normalizada.includes('myth') || normalizada.includes('mitico')) return 2;
+    if (normalizada.includes('legend') || normalizada.includes('lendario')) return 3;
+    if (normalizada.includes('epic') || normalizada.includes('epico')) return 4;
+    if (normalizada.includes('raro')) return 5;
+    if (normalizada.includes('excelente') || normalizada.includes('great')) return 6;
+    if (normalizada.includes('comum')) return 7;
+    return 99;
+}
+
+function ordemDeCategoria(tipo, highlightType) {
+    if (highlightType && tipo === highlightType) return 0;
+    const ordem = ['Entrada', 'Prato Principal', 'Sobremesa'];
+    return (ordem.indexOf(tipo) + 1) || 99;
 }
 
 // ============================================================
@@ -251,37 +348,36 @@ function atualizarResultados() {
         .map(r => ({ receita: r, porcoes: calcularPorcoes(r, inventario) }))
         .filter(x => x.porcoes > 0);
 
-    if (highlightType) {
-        receitasPossiveis.sort((a, b) =>
-            (b.receita.tipo === highlightType) - (a.receita.tipo === highlightType)
-        );
-    }
-
     resultados.querySelectorAll('.recipe, .empty-message').forEach(el => el.remove());
 
-    if (receitasPossiveis.length === 0) {
-        const msg = document.createElement('p');
-        msg.className    = 'empty-message';
-        msg.textContent  = 'Informe seus ingredientes para descobrir quais pratos você consegue preparar.';
-        resultados.appendChild(msg);
-        return;
-    }
+    const sugestoes = receitas
+        .filter(receita => !receitasPossiveis.some(item => item.receita.id === receita.id))
+        .map(receita => ({ receita, trades: obterSugestaoDeTroca(receita, inventario) }))
+        .filter(item => item.trades);
 
-    receitasPossiveis.forEach(({ receita, porcoes }) => {
+    const listaCompleta = [
+        ...receitasPossiveis.map(item => ({ ...item, trades: null })),
+        ...sugestoes.map(item => ({ receita: item.receita, porcoes: 0, trades: item.trades }))
+    ].sort((a, b) => {
+        const categoryOrder = ordemDeCategoria(a.receita.tipo, highlightType) - ordemDeCategoria(b.receita.tipo, highlightType);
+        return categoryOrder || ordemDeRaridade(a.receita.raridade) - ordemDeRaridade(b.receita.raridade) || a.receita.id - b.receita.id;
+    });
+
+    listaCompleta.forEach(({ receita, porcoes, trades }) => {
         const isHighlight = highlightType && receita.tipo === highlightType;
-        const isDimmed    = highlightType && !isHighlight;
-
-        const card = document.createElement('article');
-        card.className = 'recipe' + (isHighlight ? ' highlight' : '') + (isDimmed ? ' dimmed' : '');
-        card.innerHTML  = [
-            '<img class="recipe-image" src="assets/recipes/recipe-' + receita.id + '.png" alt="' + receita.nome + '">',
-            '<h3>' + receita.nome + '</h3>',
-            '<div class="recipe-info">' + receita.tipo + ' &bull; ' + receita.raridade + '</div>',
-            '<div class="recipe-portions">\uD83C\uDF7D\uFE0F Pode fazer: ' + porcoes + 'x</div>',
-            '<div class="recipe-ingredients">' + formatarIngredientes(receita.ingredientes) + '</div>'
-        ].join('');
+        const isDimmed = highlightType && !isHighlight;
+        const card = criarCardDeReceita(receita, porcoes, trades);
+        if (isHighlight) card.classList.add('highlight');
+        if (isDimmed) card.classList.add('dimmed');
         resultados.appendChild(card);
     });
+
+    if (!listaCompleta.length) {
+        const msg = document.createElement('p');
+        msg.className = 'empty-message';
+        msg.textContent = 'Nenhum prato disponível com os ingredientes informados.';
+        resultados.appendChild(msg);
+    }
 }
 
 // ============================================================
@@ -300,21 +396,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Chef cards: only ONE open at a time, clicking another switches ---
+    // --- Chef cards: one normal chef plus any number of rune chefs ---
     const allChefCards = document.querySelectorAll('.chef-card');
 
-    function openChef(card) {
-        const selectedChef = getSelectedChefCard();
-        if (selectedChef && selectedChef !== card) return;
-        card.classList.toggle('active');
+    function populateChefPreview(card) {
+        const preview = card.querySelector('.chef-preview');
+        preview.innerHTML = [...card.querySelectorAll('.map-chef-item')].map(item => {
+            const image = item.querySelector('.ingredient-icon');
+            return image ? `<img src="${image.src}" alt="${item.dataset.id}">` : '';
+        }).join('');
+    }
 
-        if (!card.classList.contains('active')) {
-            card.querySelectorAll('.map-chef-item input').forEach(i => { i.value = 0; });
-            card.querySelectorAll('.chef-checkbox input').forEach(i => { i.checked = false; });
+    function openChef(card) {
+        if (card.classList.contains('active')) {
+            card.classList.remove('active', 'rune-active');
+            card.querySelector('.rune-checkbox input').checked = false;
+        } else if (card.querySelector('.rune-checkbox input').checked) {
+            card.classList.add('active', 'rune-active');
+        } else if (!document.querySelector('.chef-card.active:not(.rune-active)')) {
+            card.classList.add('active');
+        } else {
+            card.classList.add('chef-blocked');
+            window.setTimeout(() => card.classList.remove('chef-blocked'), 350);
+            return;
         }
 
         allChefCards.forEach(other => {
-            other.querySelector('.chef-header').setAttribute('aria-disabled', other !== card && card.classList.contains('active'));
+            other.querySelector('.chef-header').setAttribute('aria-disabled', 'false');
         });
 
         updateMapChefCostSummary();
@@ -323,12 +431,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     allChefCards.forEach(card => {
+        populateChefPreview(card);
         card.querySelector('.chef-header').addEventListener('click', () => openChef(card));
         card.querySelectorAll('.chef-checkbox input').forEach(checkbox => checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 card.querySelectorAll('.chef-checkbox input').forEach(other => {
                     if (other !== checkbox) other.checked = false;
                 });
+            }
+            if (checkbox.closest('.rune-checkbox')) {
+                if (checkbox.checked) {
+                    card.classList.add('active', 'rune-active');
+                } else if (card.classList.contains('rune-active')) {
+                    card.classList.remove('active', 'rune-active');
+                }
+            } else if (checkbox.checked && !card.classList.contains('active')) {
+                if (!document.querySelector('.chef-card.active:not(.rune-active)')) card.classList.add('active');
+                else checkbox.checked = false;
             }
             updateMapChefCostSummary();
             updateAffordability();
@@ -353,9 +472,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const costAmount = Number(item.getAttribute('data-cost-amount'));
 
             // Tally costs from OTHER chef items
+            const selectedChef = item.closest('.chef-card');
             let otherCosts = 0;
-            const selectedChef = getSelectedChefCard();
-            selectedChef.querySelectorAll('.map-chef-item').forEach(other => {
+            getActiveChefCards().flatMap(card => [...card.querySelectorAll('.map-chef-item')]).forEach(other => {
                 if (other === item) return;
                 const otherVal = Number(other.querySelector('input').value) || 0;
                 if (otherVal > 0 && other.getAttribute('data-cost-type') === costType) {
