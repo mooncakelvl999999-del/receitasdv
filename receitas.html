@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todas as receitas - Vale do Dragão Temporada 5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="receitas.css">
+</head>
+
+<body>
+    <main class="catalog-page">
+        <header class="catalog-header">
+            <a class="back-link" href="index.html">← Voltar para ingredientes</a>
+            <p class="eyebrow">VALE DO DRAGÃO · TEMPORADA 5</p>
+            <h1>Todas as receitas</h1>
+            <p class="intro">Consulte os ingredientes necessários para preparar cada prato.</p>
+            <div class="catalog-tools">
+                <label class="search-field">
+                    <span>🔎</span>
+                    <input id="recipe-search" type="search" placeholder="Buscar receita ou ingrediente" autocomplete="off">
+                </label>
+                <div class="category-filters" role="group" aria-label="Filtrar receitas por categoria">
+                    <button class="category-btn active" data-category="Todas">Todas</button>
+                    <button class="category-btn" data-category="Entrada">Entradas</button>
+                    <button class="category-btn" data-category="Prato Principal">Pratos principais</button>
+                    <button class="category-btn" data-category="Sobremesa">Sobremesas</button>
+                </div>
+                <label class="rarity-filter">
+                    <span>Raridade</span>
+                    <select id="rarity-filter">
+                        <option value="Todas">Todas</option>
+                    </select>
+                </label>
+            </div>
+            <div class="ingredient-filter-row">
+                <span class="filter-label">Ingredientes</span>
+                <div id="ingredient-filters" class="ingredient-filters" role="group" aria-label="Filtrar por ingredientes"></div>
+            </div>
+        </header>
+
+        <div id="recipe-catalog" class="recipe-catalog" aria-live="polite"></div>
+        <p id="catalog-status" class="catalog-status">Carregando receitas...</p>
+
+        <footer>
+            Desenvolvido por Kakalover e Dance · Jordan MooMoo (Enigma) é o proprietário da planilha fonte
+        </footer>
+    </main>
+
+    <dialog id="recipe-modal" class="recipe-modal">
+        <button id="modal-close" class="modal-close" type="button" aria-label="Fechar detalhes">×</button>
+        <div id="modal-content"></div>
+    </dialog>
+
+    <script src="receitas.js"></script>
+</body>
+
+</html>

@@ -2,6 +2,14 @@ let receitas = [];
 let unidadesIngredientes = {};
 let selectedDay = null;
 
+const IMAGENS_INGREDIENTES = {
+    Ovo: 'Ovo', Trigo: 'Trigo', Alface: 'Alface', Carne: 'Carne', Leite: 'Leite',
+    Manjericão: 'Manjericão', Cacau: 'Cacau', Caviar: 'Caviar', Queijo: 'Queijo',
+    Pimenta: 'Pimenta', 'Favo de mel': 'Favo de mel', Trufa: 'Trufa', Atum: 'Atum',
+    Milho: 'Milho', Amendoim: 'Amendoim', Batata: 'Batata', Arroz: 'Arroz',
+    Camarão: 'Camarão', Morango: 'Morango', 'Cana-de-açúcar': 'Cana-de-açúcar', Tomate: 'Tomate'
+};
+
 const DAY_TYPE_MAP = {
     'Terca':  'Entrada',
     'Quarta': 'Prato Principal',
@@ -66,8 +74,7 @@ function getSelectedChefCard() {
 }
 
 function chefDoesNotUseRegularIngredients(card) {
-    const checkbox = card && card.querySelector('.chef-checkbox input');
-    return Boolean(checkbox && checkbox.checked);
+    return Boolean(card && card.querySelector('.chef-checkbox input:checked'));
 }
 
 // ============================================================
@@ -197,8 +204,14 @@ function calcularPorcoes(receita, inventario) {
 
 function formatarIngredientes(lista) {
     return Object.entries(contarIngredientes(lista))
-        .map(([ing, qty]) => qty === 1 ? ing : ing + ' \u00d7' + qty)
-        .join(', ');
+        .map(([ing, qty]) => {
+            const imagem = IMAGENS_INGREDIENTES[ing];
+            const visual = imagem
+                ? '<img src="assets/ingredients/' + imagem + '.png" alt="">'
+                : '';
+            return '<span class="recipe-ingredient">' + visual + '<span>' + ing + (qty === 1 ? '' : ' \u00d7' + qty) + '</span></span>';
+        })
+        .join(' ');
 }
 
 // ============================================================
@@ -261,6 +274,7 @@ function atualizarResultados() {
         const card = document.createElement('article');
         card.className = 'recipe' + (isHighlight ? ' highlight' : '') + (isDimmed ? ' dimmed' : '');
         card.innerHTML  = [
+            '<img class="recipe-image" src="assets/recipes/recipe-' + receita.id + '.png" alt="' + receita.nome + '">',
             '<h3>' + receita.nome + '</h3>',
             '<div class="recipe-info">' + receita.tipo + ' &bull; ' + receita.raridade + '</div>',
             '<div class="recipe-portions">\uD83C\uDF7D\uFE0F Pode fazer: ' + porcoes + 'x</div>',
@@ -296,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!card.classList.contains('active')) {
             card.querySelectorAll('.map-chef-item input').forEach(i => { i.value = 0; });
-            card.querySelector('.chef-checkbox input').checked = false;
+            card.querySelectorAll('.chef-checkbox input').forEach(i => { i.checked = false; });
         }
 
         allChefCards.forEach(other => {
@@ -310,11 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allChefCards.forEach(card => {
         card.querySelector('.chef-header').addEventListener('click', () => openChef(card));
-        card.querySelector('.chef-checkbox input').addEventListener('change', () => {
+        card.querySelectorAll('.chef-checkbox input').forEach(checkbox => checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                card.querySelectorAll('.chef-checkbox input').forEach(other => {
+                    if (other !== checkbox) other.checked = false;
+                });
+            }
             updateMapChefCostSummary();
             updateAffordability();
             atualizarResultados();
-        });
+        }));
     });
 
     // --- Map Chef item inputs ---
