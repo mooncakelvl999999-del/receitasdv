@@ -14,94 +14,105 @@
 
     <main class="container">
 
-        <h1>🍳 Slayer Legend</h1>
+        <section class="main-content">
 
-        <p class="subtitle">
-            Descubra quais pratos você consegue preparar
-        </p>
+            <h1>🍳 Slayer Legend</h1>
 
-        <section class="ingredients">
+            <p class="subtitle">
+                Descubra quais pratos você consegue preparar
+            </p>
 
-            <div class="ingredient-box">
-                <label for="ingredient1">
-                    Ingrediente 1
-                </label>
+            <section class="ingredients">
 
-                <select id="ingredient1">
-                    <option value="">Selecione</option>
-                </select>
+                <div class="ingredient-box">
+                    <label for="ingredient1">
+                        Ingrediente 1
+                    </label>
 
-                <input
-                    id="quantity1"
-                    type="number"
-                    min="0"
-                    value="0"
-                >
-            </div>
+                    <select id="ingredient1">
+                        <option value="">Selecione</option>
+                    </select>
 
-
-            <div class="ingredient-box">
-                <label for="ingredient2">
-                    Ingrediente 2
-                </label>
-
-                <select id="ingredient2">
-                    <option value="">Selecione</option>
-                </select>
-
-                <input
-                    id="quantity2"
-                    type="number"
-                    min="0"
-                    value="0"
-                >
-            </div>
+                    <input
+                        id="quantity1"
+                        type="number"
+                        min="0"
+                        value="0"
+                    >
+                </div>
 
 
-            <div class="ingredient-box">
-                <label for="ingredient3">
-                    Ingrediente 3
-                </label>
+                <div class="ingredient-box">
+                    <label for="ingredient2">
+                        Ingrediente 2
+                    </label>
 
-                <select id="ingredient3">
-                    <option value="">Selecione</option>
-                </select>
+                    <select id="ingredient2">
+                        <option value="">Selecione</option>
+                    </select>
 
-                <input
-                    id="quantity3"
-                    type="number"
-                    min="0"
-                    value="0"
-                >
-            </div>
+                    <input
+                        id="quantity2"
+                        type="number"
+                        min="0"
+                        value="0"
+                    >
+                </div>
 
 
-            <div class="ingredient-box">
-                <label for="ingredient4">
-                    Ingrediente 4
-                </label>
+                <div class="ingredient-box">
+                    <label for="ingredient3">
+                        Ingrediente 3
+                    </label>
 
-                <select id="ingredient4">
-                    <option value="">Selecione</option>
-                </select>
+                    <select id="ingredient3">
+                        <option value="">Selecione</option>
+                    </select>
 
-                <input
-                    id="quantity4"
-                    type="number"
-                    min="0"
-                    value="0"
-                >
-            </div>
+                    <input
+                        id="quantity3"
+                        type="number"
+                        min="0"
+                        value="0"
+                    >
+                </div>
+
+
+                <div class="ingredient-box">
+                    <label for="ingredient4">
+                        Ingrediente 4
+                    </label>
+
+                    <select id="ingredient4">
+                        <option value="">Selecione</option>
+                    </select>
+
+                    <input
+                        id="quantity4"
+                        type="number"
+                        min="0"
+                        value="0"
+                    >
+                </div>
+
+            </section>
 
         </section>
 
-        <button id="searchButton">
-            🔎 Procurar pratos
-        </button>
 
-        <section id="results"></section>
+        <aside id="results" class="results-panel">
+
+            <h2>🍽️ Pratos possíveis</h2>
+
+            <p class="empty-message">
+                Adicione seus ingredientes para começar.
+            </p>
+
+        </aside>
 
     </main>
+
+    <script src="script.js"></script>
 
 </body>
 
