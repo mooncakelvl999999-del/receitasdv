@@ -20,12 +20,12 @@ async function carregarDados() {
 
 
         if (!receitasResponse.ok) {
-            throw new Error("Não foi possível carregar recipes.json");
+            throw new Error("Não foi possível carregar receitas.json");
         }
 
 
         if (!ingredientesResponse.ok) {
-            throw new Error("Não foi possível carregar ingredients.json");
+            throw new Error("Não foi possível carregar ingredientes.json");
         }
 
 
