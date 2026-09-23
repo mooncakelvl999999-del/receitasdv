@@ -10,6 +10,20 @@ const IMAGENS_INGREDIENTES = {
     Camarão: 'Camarão', Morango: 'Morango', 'Cana-de-açúcar': 'Cana-de-açúcar', Tomate: 'Tomate'
 };
 
+const CUSTOS_CHEF = {
+    Alface: 20,
+    Carne: 10,
+    Leite: 50,
+    Trigo: 100
+};
+
+const ICONES_CUSTOS_CHEF = {
+    Alface: '🥬',
+    Carne: '🥩',
+    Leite: '🥛',
+    Trigo: '🌾'
+};
+
 const DAY_TYPE_MAP = {
     'Terca':  'Entrada',
     'Quarta': 'Prato Principal',
@@ -69,6 +83,52 @@ function getRawRegularQty(ingrediente) {
     return campo ? (Number(campo.value) || 0) : 0;
 }
 
+function getChefCostType(item) {
+    return item ? item.dataset.costType || '' : '';
+}
+
+function getChefCostAmount(item) {
+    return CUSTOS_CHEF[getChefCostType(item)] || 0;
+}
+
+function getSelectedSiblingCostTypes(item) {
+    const chef = item.closest('.chef-card');
+    return [...chef.querySelectorAll('.map-chef-item')]
+        .filter(other => other !== item)
+        .map(getChefCostType)
+        .filter(Boolean);
+}
+
+function renderChefCostOptions(item) {
+    const options = item.querySelector('.chef-cost-options');
+    if (!options) return;
+
+    let selectedLabel = item.querySelector('.chef-cost-selection');
+    if (!selectedLabel) {
+        selectedLabel = document.createElement('small');
+        selectedLabel.className = 'chef-cost-selection';
+        options.before(selectedLabel);
+    }
+
+    const selectedType = getChefCostType(item);
+    item.classList.toggle('cost-selected', Boolean(selectedType));
+    const usedBySibling = getSelectedSiblingCostTypes(item);
+    options.innerHTML = Object.keys(CUSTOS_CHEF).map(type => {
+        const disabled = usedBySibling.includes(type);
+        const selected = selectedType === type;
+        const image = IMAGENS_INGREDIENTES[type];
+        return `<button type="button" class="chef-cost-btn${selected ? ' selected' : ''}" data-cost-type="${type}" aria-label="${type}, ${CUSTOS_CHEF[type]} unidades" aria-pressed="${selected}"${disabled ? ' disabled' : ''} title="${type} (${CUSTOS_CHEF[type]})"><img src="assets/ingredients/${image}.png" alt="${type}"></button>`;
+    }).join('');
+
+    selectedLabel.textContent = selectedType
+        ? `Cobrado com ${selectedType} (${CUSTOS_CHEF[selectedType]})`
+        : 'Escolha o ingrediente usado para comprar';
+}
+
+function renderAllChefCostOptions() {
+    document.querySelectorAll('.map-chef-item').forEach(renderChefCostOptions);
+}
+
 function getSelectedChefCard() {
     return document.querySelector('.chef-card.active');
 }
@@ -95,10 +155,10 @@ function updateAffordability() {
     allChefItems.forEach(item => {
         const chef = item.closest('.chef-card');
         const val = Number(item.querySelector('input').value) || 0;
-        if (val > 0 && !chefDoesNotUseRegularIngredients(chef)) {
-            const batches    = Math.floor(val / 10);
-            const costType   = item.getAttribute('data-cost-type');
-            const costAmount = Number(item.getAttribute('data-cost-amount'));
+        const costType = getChefCostType(item);
+        const costAmount = getChefCostAmount(item);
+        if (val > 0 && costType && !chefDoesNotUseRegularIngredients(chef)) {
+            const batches = Math.floor(val / 10);
             committed[costType] = (committed[costType] || 0) + (batches * costAmount);
         }
     });
@@ -107,8 +167,23 @@ function updateAffordability() {
         const chef        = item.closest('.chef-card');
         const input      = item.querySelector('input');
         const val        = Number(input.value) || 0;
-        const costType   = item.getAttribute('data-cost-type');
-        const costAmount = Number(item.getAttribute('data-cost-amount'));
+        const costType   = getChefCostType(item);
+        const costAmount = getChefCostAmount(item);
+
+        let warning = item.querySelector('.ingredient-warning');
+        if (!warning) {
+            warning = document.createElement('small');
+            warning.className = 'ingredient-warning';
+            item.appendChild(warning);
+        }
+
+        if (!costType) {
+            item.classList.remove('cannot-afford');
+            input.disabled = true;
+            input.title = 'Escolha como pagar este ingrediente';
+            warning.hidden = true;
+            return;
+        }
 
         if (chefDoesNotUseRegularIngredients(chef)) {
             item.classList.remove('cannot-afford');
@@ -130,13 +205,6 @@ function updateAffordability() {
 
         // Can the user afford at least ONE batch (10 items)?
         const canAfford = remaining >= costAmount;
-        let warning = item.querySelector('.ingredient-warning');
-        if (!warning) {
-            warning = document.createElement('small');
-            warning.className = 'ingredient-warning';
-            item.appendChild(warning);
-        }
-
         if (!canAfford && val === 0) {
             item.classList.add('cannot-afford');
             input.disabled = true;
@@ -167,10 +235,10 @@ function obterInventario() {
         const val   = Number(input ? input.value : 0) || 0;
         if (val > 0) {
             const batches    = Math.floor(val / 10);
-            const costType   = item.getAttribute('data-cost-type');
-            const costAmount = Number(item.getAttribute('data-cost-amount'));
+            const costType   = getChefCostType(item);
+            const costAmount = getChefCostAmount(item);
             const gainId     = item.getAttribute('data-id');
-            if (!chefDoesNotUseRegularIngredients(chef)) {
+            if (costType && !chefDoesNotUseRegularIngredients(chef)) {
                 mapChefCosts[costType] = (mapChefCosts[costType] || 0) + (batches * costAmount);
             }
             mapChefGains[gainId]   = (mapChefGains[gainId]   || 0) + val;
@@ -245,10 +313,10 @@ function updateMapChefCostSummary() {
         if (chefDoesNotUseRegularIngredients(chef)) return;
         chef.querySelectorAll('.map-chef-item').forEach(item => {
         const val = Number(item.querySelector('input').value) || 0;
-        if (val > 0) {
+        const costType = getChefCostType(item);
+        const costAmount = getChefCostAmount(item);
+        if (val > 0 && costType) {
             const batches    = Math.floor(val / 10);
-            const costType   = item.getAttribute('data-cost-type');
-            const costAmount = Number(item.getAttribute('data-cost-amount'));
             costs[costType]  = (costs[costType] || 0) + (batches * costAmount);
         }
         });
@@ -265,10 +333,11 @@ function obterSugestaoDeTroca(receita, inventario) {
 
     const options = new Map();
     activeChefs.forEach(chef => chef.querySelectorAll('.map-chef-item').forEach(item => {
-        if (!options.has(item.dataset.id)) {
+        const costType = getChefCostType(item);
+        if (costType && !options.has(item.dataset.id)) {
             options.set(item.dataset.id, {
-                costType: item.dataset.costType,
-                costAmount: Number(item.dataset.costAmount),
+                costType,
+                costAmount: getChefCostAmount(item),
                 chefName: item.closest('.chef-card').querySelector('.chef-header').textContent.trim()
             });
         }
@@ -282,9 +351,10 @@ function obterSugestaoDeTroca(receita, inventario) {
             if (quantity > 0) {
                 chefGains[item.dataset.id] = (chefGains[item.dataset.id] || 0) + quantity;
             }
-            if (quantity > 0 && !chefDoesNotUseRegularIngredients(chef)) {
+            const costType = getChefCostType(item);
+            if (quantity > 0 && costType && !chefDoesNotUseRegularIngredients(chef)) {
                 const batches = Math.floor(quantity / 10);
-                currentCosts[item.dataset.costType] = (currentCosts[item.dataset.costType] || 0) + batches * Number(item.dataset.costAmount);
+                currentCosts[costType] = (currentCosts[costType] || 0) + batches * getChefCostAmount(item);
             }
         });
     });
@@ -462,6 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allChefCards.forEach(card => {
         populateChefPreview(card);
+        card.querySelectorAll('.map-chef-item').forEach(renderChefCostOptions);
         card.querySelector('.chef-header').addEventListener('click', () => openChef(card));
         card.querySelectorAll('.chef-checkbox input').forEach(checkbox => checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
@@ -485,6 +556,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     });
 
+    // --- Chef cost ingredient choices ---
+    document.querySelectorAll('.chef-cost-options').forEach(options => {
+        options.addEventListener('click', event => {
+            const button = event.target.closest('.chef-cost-btn');
+            if (!button || button.disabled) return;
+
+            const item = options.closest('.map-chef-item');
+            item.dataset.costType = button.dataset.costType;
+            renderAllChefCostOptions();
+
+            const input = item.querySelector('input');
+            input.disabled = false;
+            input.focus();
+            updateMapChefCostSummary();
+            updateAffordability();
+            atualizarResultados();
+        });
+    });
+
     // --- Map Chef item inputs ---
     document.querySelectorAll('.map-chef-item').forEach(item => {
         const input = item.querySelector('input');
@@ -498,8 +588,9 @@ document.addEventListener('DOMContentLoaded', () => {
             input.value = val;
 
             // Check affordability: cannot spend more than you have
-            const costType   = item.getAttribute('data-cost-type');
-            const costAmount = Number(item.getAttribute('data-cost-amount'));
+            const costType   = getChefCostType(item);
+            const costAmount = getChefCostAmount(item);
+            if (!costType || !costAmount) return;
 
             // Tally costs from OTHER chef items
             const selectedChef = item.closest('.chef-card');
@@ -507,8 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
             getActiveChefCards().flatMap(card => [...card.querySelectorAll('.map-chef-item')]).forEach(other => {
                 if (other === item) return;
                 const otherVal = Number(other.querySelector('input').value) || 0;
-                if (otherVal > 0 && other.getAttribute('data-cost-type') === costType) {
-                    otherCosts += Math.floor(otherVal / 10) * Number(other.getAttribute('data-cost-amount'));
+                if (otherVal > 0 && getChefCostType(other) === costType) {
+                    otherCosts += Math.floor(otherVal / 10) * getChefCostAmount(other);
                 }
             });
 
