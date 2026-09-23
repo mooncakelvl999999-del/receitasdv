@@ -33,6 +33,7 @@ h1 {
     text-align: center;
     margin: 0 0 8px;
     font-size: 32px;
+    line-height: 1.15;
 }
 
 .subtitle {
@@ -92,17 +93,35 @@ h1 {
 .catalog-link {
     display: inline-block;
     width: fit-content;
-    margin: -12px 0 16px;
-    padding: 0;
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
     color: #d1d5db;
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.catalog-link-top {
+    display: block;
+    margin: 0 auto 16px;
 }
 
 .catalog-link:hover {
+    color: #111827;
+    background: #f59e0b;
+    transform: translateY(-1px);
+}
+
+.catalog-link span {
+    margin-left: 4px;
     color: #fbbf24;
+}
+
+.catalog-link:hover span {
+    color: #111827;
 }
 
 
@@ -598,9 +617,17 @@ h1 {
 }
 
 @media (max-width: 500px) {
-    .container { width: 94%; padding: 20px 0; }
-    h1 { font-size: 26px; }
-    .ingredients { grid-template-columns: repeat(2, 1fr); }
-    .chefs-container { grid-template-columns: repeat(2, 1fr); }
+    .container { width: 92%; padding: 16px 0 24px; gap: 22px; }
+    h1 { font-size: 24px; line-height: 1.18; }
+    .subtitle { font-size: 14px; }
+    .credits { font-size: 11px; line-height: 1.4; }
+    .last-update { margin-bottom: 16px; }
+    .catalog-link { width: 100%; text-align: center; }
+    .ingredients { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .ingredient-box { height: 128px; min-height: 0; padding: 10px 6px; aspect-ratio: auto; }
+    .ingredients-section h2 { font-size: 17px; }
+    .chefs-container { grid-template-columns: 1fr; }
     .day-selector { flex-direction: column; }
+    .day-btn { min-height: 48px; }
+    .results-panel { padding: 16px; }
 }

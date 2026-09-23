@@ -164,6 +164,11 @@ h1 {
     gap: 6px;
     overflow-x: auto;
     padding-bottom: 2px;
+    scrollbar-width: none;
+}
+
+.ingredient-filters-row::-webkit-scrollbar {
+    display: none;
 }
 
 .ingredient-filter-btn {
@@ -454,5 +459,41 @@ footer {
 
     .category-btn {
         flex: 1;
+        min-width: 0;
+        min-height: 46px;
+        padding: 8px 6px;
+        line-height: 1.15;
+    }
+
+    .recipe-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .catalog-card {
+        height: 270px;
+    }
+
+    .catalog-card > img {
+        height: 72px;
+    }
+
+    .catalog-card-body {
+        padding: 9px;
+    }
+
+    .catalog-card h3 {
+        min-height: 38px;
+        font-size: 13px;
+    }
+
+    .ingredient-costs {
+        font-size: 11px;
+    }
+
+    .ingredient-costs img {
+        width: 20px;
+        height: 20px;
+        flex-basis: 20px;
     }
 }

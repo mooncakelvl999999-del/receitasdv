@@ -132,23 +132,34 @@ function preencherFiltroDeIngredientes() {
             button.innerHTML = imagem
                 ? `<img src="assets/ingredients/${imagem}.png" alt=""> <span>${ingrediente}</span>`
                 : `<span>${ICONES_INGREDIENTES[ingrediente] || '🍴'} ${ingrediente}</span>`;
-            button.addEventListener('click', () => {
-                if (ingredientesAtivos.has(ingrediente)) {
-                    ingredientesAtivos.delete(ingrediente);
-                    button.classList.remove('active');
-                    button.setAttribute('aria-pressed', 'false');
-                } else {
-                    ingredientesAtivos.add(ingrediente);
-                    button.classList.add('active');
-                    button.setAttribute('aria-pressed', 'true');
-                }
-                renderizarCatalogo();
-            });
             row.appendChild(button);
         });
         filtrosIngredientes.appendChild(group);
     });
 }
+
+function sincronizarFiltrosDeIngredientes() {
+    filtrosIngredientes.querySelectorAll('.ingredient-filter-btn').forEach(button => {
+        const ativo = ingredientesAtivos.has(button.dataset.ingredient);
+        button.classList.toggle('active', ativo);
+        button.setAttribute('aria-pressed', String(ativo));
+    });
+}
+
+filtrosIngredientes.addEventListener('click', event => {
+    const button = event.target.closest('.ingredient-filter-btn');
+    if (!button) return;
+
+    const ingrediente = button.dataset.ingredient;
+    if (ingredientesAtivos.has(ingrediente)) {
+        ingredientesAtivos.delete(ingrediente);
+    } else {
+        ingredientesAtivos.add(ingrediente);
+    }
+
+    sincronizarFiltrosDeIngredientes();
+    renderizarCatalogo();
+});
 
 function renderizarCatalogo() {
     const texto = busca.value;
