@@ -466,6 +466,21 @@ h1 {
     margin-bottom: 10px;
 }
 
+.recipe-bonus {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #374151;
+    color: #a7f3d0;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.chef-required-message {
+    padding: 16px 0;
+    color: #fbbf24;
+    font-weight: 600;
+}
+
 .recipe-portions {
     display: none;
     font-size: 16px;

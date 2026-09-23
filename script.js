@@ -324,6 +324,9 @@ function obterSugestaoDeTroca(receita, inventario) {
 
 function criarCardDeReceita(receita, porcoes, trades = null) {
     const isSuggestion = Boolean(trades);
+    const bonus = receita.tipo_efeito
+        ? '<div class="recipe-bonus">🎁 Bônus ao preparar: ' + receita.tipo_efeito + (receita.porcentagem ? ' +' + (Number(receita.porcentagem) * 100).toLocaleString('pt-BR') + '%' : '') + '</div>'
+        : '';
     const card = document.createElement('article');
     card.className = 'recipe' + (isSuggestion ? ' recipe-suggestion' : '');
     card.innerHTML = [
@@ -331,7 +334,8 @@ function criarCardDeReceita(receita, porcoes, trades = null) {
         '<h3>' + receita.nome + '</h3>',
         '<div class="recipe-info">' + receita.tipo + ' &bull; ' + receita.raridade + '</div>',
         isSuggestion ? '<div class="trade-suggestion">Troque ' + trades.map(trade => trade.quantity + 'x ' + trade.ingredient + ' com ' + trade.chefName).join(' e ') + '</div>' : '',
-        '<div class="recipe-ingredients">' + formatarIngredientes(receita.ingredientes) + '</div>'
+        '<div class="recipe-ingredients">' + formatarIngredientes(receita.ingredientes) + '</div>',
+        bonus
     ].join('');
     return card;
 }
@@ -367,6 +371,14 @@ function atualizarResultados() {
         .filter(x => x.porcoes > 0);
 
     resultados.querySelectorAll('.recipe, .empty-message').forEach(el => el.remove());
+
+    if (!getActiveChefCards().length) {
+        const msg = document.createElement('p');
+        msg.className = 'empty-message chef-required-message';
+        msg.textContent = 'Escolha um chef para ver os pratos possíveis.';
+        resultados.appendChild(msg);
+        return;
+    }
 
     const sugestoes = receitas
         .filter(receita => !receitasPossiveis.some(item => item.receita.id === receita.id))
